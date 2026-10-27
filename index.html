@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>we kawanua - Portal Berita Sulawesi Utara Terdepan</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts (Inter & Montserrat) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            detikBlue: '#0073b7',
+            detikDarkBlue: '#005b92',
+            detikLightBlue: '#eef6fc',
+            detikRed: '#e11d48',
+            detikText: '#1e293b'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            brand: ['Montserrat', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased selection:bg-detikBlue selection:text-white">
+
+  <!-- ==================== 1. TOP UTILITY BAR (DETIK STYLE) ==================== -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Left: Hamburger Menu Button -->
+      <button onclick="toggleSideMenu()" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium text-xs sm:text-sm transition">
+        <i class="fa-solid fa-bars text-detikBlue"></i>
+        <span>MENU</span>
+      </button>
+
+      <!-- Center: Search Bar -->
+      <div class="flex-1 max-w-xl relative">
+        <div class="relative flex items-center">
+          <input type="text" id="searchInput" onkeyup="handleSearch(event)" placeholder="Cari berita Sulawesi Utara..." 
+            class="w-full py-1.5 pl-4 pr-10 text-xs sm:text-sm rounded-full border border-gray-300 focus:outline-none focus:border-detikBlue focus:ring-1 focus:ring-detikBlue transition">
+          <button onclick="executeSearch()" class="absolute right-1 w-7 h-7 bg-detikBlue text-white rounded-full flex items-center justify-center hover:bg-detikDarkBlue transition">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: User Auth & Bookmark Buttons -->
+      <div class="flex items-center gap-2">
+        <button onclick="openBookmarksModal()" class="relative p-2 text-gray-600 hover:text-detikBlue transition" title="Berita Tersimpan">
+          <i class="fa-regular fa-bookmark text-base sm:text-lg"></i>
+          <span id="bookmarkBadge" class="hidden absolute -top-1 -right-1 bg-detikRed text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">0</span>
+        </button>
+
+        <button onclick="openToast('Fitur Pendaftaran MPC Kawanua Segera Hadir')" class="hidden sm:inline-block bg-detikBlue hover:bg-detikDarkBlue text-white text-xs font-semibold px-4 py-1.5 rounded-full transition">
+          Daftar MPC
+        </button>
+        <button onclick="openToast('Silakan masuk dengan Akun Kawanua Anda')" class="border border-detikBlue text-detikBlue hover:bg-detikLightBlue text-xs font-semibold px-4 py-1.5 rounded-full transition">
+          Masuk
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 2. MAIN CONTAINER ==================== -->
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 py-4">
+
+    <!-- TOP BANNER (IKLAN DJARUM SUPER / PROMO STYLE) -->
+    <div class="mb-5 rounded-lg overflow-hidden bg-gradient-to-r from-amber-900 via-stone-800 to-amber-950 text-white p-4 sm:p-6 shadow-md relative">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+        <div class="text-center md:text-left">
+          <span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded tracking-widest uppercase">SPONSORED</span>
+          <h2 class="font-brand font-black text-xl sm:text-2xl text-amber-400 tracking-wide mt-1">DJARUM SUPER</h2>
+          <p class="text-xs sm:text-sm text-gray-300">Nikmati Petualangan Tanpa Batas di Keindahan Alam Sulawesi Utara</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=300&q=80" alt="Iklan Sulut" class="w-32 sm:w-48 h-16 sm:h-20 object-cover rounded shadow border border-amber-500/30">
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND LOGO HEADER -->
+    <div class="py-3 flex flex-col md:flex-row md:items-end justify-between border-b border-gray-200 mb-4">
+      <div>
+        <a href="#" onclick="filterCategory('all')" class="inline-flex items-baseline gap-1 font-brand">
+          <span class="text-4xl sm:text-5xl font-black text-detikBlue tracking-tight">we</span>
+          <span class="text-4xl sm:text-5xl font-black text-detikRed tracking-tight">kawanua</span>
+        </a>
+        <p class="text-xs text-gray-500 font-medium tracking-wide">Torang Pe Berita Terdepan & Terpercaya di Sulawesi Utara</p>
+      </div>
+      <div class="text-right hidden md:block text-xs text-gray-500">
+        <p class="font-semibold text-gray-700" id="currentDateDisplay">Selasa, 27 Oktober 2026</p>
+        <p class="text-detikBlue font-medium"><i class="fa-solid fa-location-dot mr-1"></i> Manado, Sulawesi Utara (WITA)</p>
+      </div>
+    </div>
+
+    <!-- PRIMARY DETIK BLUE NAVIGATION BAR -->
+    <nav class="bg-detikBlue text-white rounded-t-lg shadow-md mb-0">
+      <div class="flex items-center overflow-x-auto no-scrollbar py-2.5 px-3 text-xs sm:text-sm font-bold whitespace-nowrap gap-4 sm:gap-6">
+        <button onclick="filterCategory('all')" class="nav-item active flex items-center gap-1.5 hover:text-amber-300 transition px-2 py-1 rounded bg-detikDarkBlue">
+          <i class="fa-solid fa-house"></i> Home
+        </button>
+        <button onclick="filterCategory('Berita')" class="nav-item hover:text-amber-300 transition">Berita</button>
+        <button onclick="filterCategory('Manado')" class="nav-item hover:text-amber-300 transition">Manado</button>
+        <button onclick="filterCategory('Bitung')" class="nav-item hover:text-amber-300 transition">Bitung</button>
+        <button onclick="filterCategory('Tomohon')" class="nav-item hover:text-amber-300 transition">Tomohon</button>
+        <button onclick="filterCategory('Kotamobagu')" class="nav-item hover:text-amber-300 transition">Kotamobagu</button>
+        <button onclick="filterCategory('Minahasa')" class="nav-item hover:text-amber-300 transition">Minahasa</button>
+        <button onclick="filterCategory('Nusa Utara')" class="nav-item hover:text-amber-300 transition">Nusa Utara</button>
+        <button onclick="filterCategory('Bolmong')" class="nav-item hover:text-amber-300 transition">Bolmong</button>
+        <button onclick="filterCategory('Wisata')" class="nav-item hover:text-amber-300 transition">Wisata & Likupang</button>
+        <button onclick="filterCategory('Kuliner')" class="nav-item hover:text-amber-300 transition">Kuliner</button>
+        <button onclick="filterCategory('Foto')" class="nav-item hover:text-amber-300 transition"><i class="fa-solid fa-camera mr-1"></i>Foto</button>
+        <button onclick="filterCategory('Video')" class="nav-item hover:text-amber-300 transition"><i class="fa-solid fa-circle-play mr-1"></i>Video</button>
+      </div>
+    </nav>
+
+    <!-- SECONDARY SUB-NAVBAR (LIGHT GREY) -->
+    <div class="bg-gray-200 border-b border-gray-300 rounded-b-lg px-3 py-2 text-xs font-semibold text-gray-700 flex items-center gap-4 overflow-x-auto no-scrollbar mb-6">
+      <span class="text-detikRed font-bold flex items-center gap-1">
+        <i class="fa-solid fa-bolt"></i> TERPOPULER:
+      </span>
+      <button onclick="filterCategory('Terpopuler')" class="hover:text-detikBlue whitespace-nowrap">Likupang KTI</button>
+      <span class="text-gray-400">•</span>
+      <button onclick="filterCategory('Manado')" class="hover:text-detikBlue whitespace-nowrap">Jembatan Soekarno</button>
+      <span class="text-gray-400">•</span>
+      <button onclick="filterCategory('Tomohon')" class="hover:text-detikBlue whitespace-nowrap">Festival Bunga Tomohon</button>
+      <span class="text-gray-400">•</span>
+      <button onclick="filterCategory('Kuliner')" class="hover:text-detikBlue whitespace-nowrap">Kuliner Tinutuan</button>
+      <span class="text-gray-400">•</span>
+      <button onclick="filterCategory('Cek Fakta')" class="hover:text-detikBlue whitespace-nowrap text-emerald-700">Cek Fakta Sulut</button>
+    </div>
+
+    <!-- SECONDARY BANNER (TASPEN / DANANTARA STYLE) -->
+    <div class="mb-6 rounded-lg overflow-hidden bg-gradient-to-r from-blue-900 to-sky-700 text-white p-3 sm:p-4 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-3">
+        <div class="bg-white text-blue-900 font-black px-3 py-1 rounded text-xs">taspen</div>
+        <div>
+          <h4 class="font-bold text-xs sm:text-sm text-yellow-300">Anugerah Jurnalistik Sulut 2026</h4>
+          <p class="text-[11px] text-blue-100 hidden sm:block">Total Hadiah Rp 60 Juta! Daftarkan Karya Tulis & Foto Terbaik Anda</p>
+        </div>
+      </div>
+      <button onclick="openToast('Info Lomba Jurnalistik Kawanua')" class="bg-yellow-400 hover:bg-yellow-300 text-blue-950 font-bold text-xs px-3 py-1.5 rounded-full transition">
+        Ikuti Lomba
+      </button>
+    </div>
+
+    <!-- ==================== 3. CONTENT GRID (MAIN CONTENT + SIDEBAR) ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT / CENTER MAIN NEWS (8 COLS) -->
+      <main class="lg:col-span-8">
+        
+        <!-- SEARCH & FILTER STATUS HEADER -->
+        <div id="filterStatus" class="hidden mb-4 p-3 bg-detikLightBlue border border-detikBlue/30 rounded-lg flex items-center justify-between">
+          <p class="text-xs sm:text-sm text-detikDarkBlue font-medium">
+            Menampilkan berita untuk: <span id="filterKeyword" class="font-bold text-detikRed"></span>
+          </p>
+          <button onclick="filterCategory('all')" class="text-xs text-detikBlue font-semibold underline hover:text-detikRed">Tampilkan Semua</button>
+        </div>
+
+        <!-- HERO FEATURED ARTICLE (DETIK HEADLINE) -->
+        <article id="heroArticle" class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden mb-6 hover:shadow-lg transition cursor-pointer" onclick="openArticleModal(heroData.id)">
+          <div class="relative h-64 sm:h-96 w-full">
+            <img id="heroImage" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" alt="Headline Berita" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 sm:p-6 text-white">
+              <span id="heroCategory" class="inline-block bg-detikRed text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded w-max mb-2">UTAMA • LIKUPANG</span>
+              <h1 id="heroTitle" class="text-xl sm:text-3xl font-extrabold leading-tight hover:text-amber-300 transition">DPSP Likupang Sambut Komitmen Investasi Hijau Rp 1.2 Triliun Untuk Pengembangan Resort Ekowisata</h1>
+              <div class="flex items-center text-xs text-gray-300 gap-4 mt-3">
+                <span id="heroAuthor"><i class="fa-regular fa-user mr-1"></i> Tim Redaksi</span>
+                <span id="heroDate"><i class="fa-regular fa-clock mr-1"></i> 10 Menit lalu</span>
+                <span><i class="fa-regular fa-comment mr-1"></i> 42 Komentar</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- LATEST NEWS LIST SECTION -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-4 mb-6">
+          <div class="flex items-center justify-between border-b border-gray-200 pb-3 mb-4">
+            <h3 class="text-lg font-bold text-detikBlue flex items-center gap-2">
+              <span class="w-2.5 h-6 bg-detikRed rounded-sm inline-block"></span>
+              Berita Terkini Sulawesi Utara
+            </h3>
+            <span class="text-xs text-gray-500 font-medium">Diperbarui Realtime</span>
+          </div>
+
+          <!-- NEWS FEED LIST CONTAINER -->
+          <div id="newsContainer" class="space-y-4">
+            <!-- Articles rendered via JS -->
+          </div>
+        </div>
+
+      </main>
+
+      <!-- RIGHT SIDEBAR (4 COLS) -->
+      <aside class="lg:col-span-4 space-y-6">
+
+        <!-- WIDGET 1: POPULAR ARTICLES (DETIK STYLE TOP 5) -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-4">
+          <h3 class="text-base font-bold text-gray-900 border-b-2 border-detikBlue pb-2 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-fire text-detikRed"></i>
+            BERITA TERPOPULER
+          </h3>
+          <div id="popularNewsContainer" class="space-y-4">
+            <!-- Popular news rendered via JS -->
+          </div>
+        </div>
+
+        <!-- WIDGET 2: WEATHER SULUT -->
+        <div class="bg-gradient-to-br from-sky-500 to-blue-700 rounded-lg shadow text-white p-4">
+          <div class="flex items-center justify-between border-b border-white/20 pb-2 mb-3">
+            <h4 class="font-bold text-sm flex items-center gap-1.5">
+              <i class="fa-solid fa-cloud-sun text-amber-300"></i> Prakiraan Cuaca Sulut
+            </h4>
+            <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded">BMKG Manado</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-center">
+            <div class="bg-white/10 p-2 rounded backdrop-blur-sm">
+              <p class="text-xs text-sky-100">Kota Manado</p>
+              <i class="fa-solid fa-sun text-amber-300 text-xl my-1"></i>
+              <p class="font-bold text-sm">31°C</p>
+              <p class="text-[10px] text-sky-200">Cerah Berawan</p>
+            </div>
+            <div class="bg-white/10 p-2 rounded backdrop-blur-sm">
+              <p class="text-xs text-sky-100">Kota Tomohon</p>
+              <i class="fa-solid fa-cloud-rain text-sky-200 text-xl my-1"></i>
+              <p class="font-bold text-sm">24°C</p>
+              <p class="text-[10px] text-sky-200">Hujan Ringan</p>
+            </div>
+            <div class="bg-white/10 p-2 rounded backdrop-blur-sm">
+              <p class="text-xs text-sky-100">Kota Bitung</p>
+              <i class="fa-solid fa-cloud-sun text-amber-300 text-xl my-1"></i>
+              <p class="font-bold text-sm">30°C</p>
+              <p class="text-[10px] text-sky-200">Cerah</p>
+            </div>
+            <div class="bg-white/10 p-2 rounded backdrop-blur-sm">
+              <p class="text-xs text-sky-100">Tahuna (Sangihe)</p>
+              <i class="fa-solid fa-wind text-sky-200 text-xl my-1"></i>
+              <p class="font-bold text-sm">28°C</p>
+              <p class="text-[10px] text-sky-200">Berangin</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- WIDGET 3: KAWANUA POLL (POLLING WARGA) -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-4">
+          <h3 class="text-base font-bold text-gray-900 border-b-2 border-detikRed pb-2 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-detikBlue"></i>
+            POLING WARGA KAWANUA
+          </h3>
+          <p class="text-xs text-gray-700 font-medium mb-3">Apakah Anda setuju penambahan penerbangan langsung luar negeri ke Bandara Sam Ratulangi Manado?</p>
+          
+          <div id="pollContainer" class="space-y-2 text-xs">
+            <button onclick="votePoll('yes')" class="w-full p-2 rounded border border-gray-300 hover:border-detikBlue hover:bg-detikLightBlue text-left font-medium transition flex justify-between items-center">
+              <span>Sangat Setuju (Meningkatkan Pariwisata)</span>
+              <span class="font-bold text-detikBlue">78%</span>
+            </button>
+            <button onclick="votePoll('no')" class="w-full p-2 rounded border border-gray-300 hover:border-detikBlue hover:bg-detikLightBlue text-left font-medium transition flex justify-between items-center">
+              <span>Perlu Kesiapan Infrastruktur</span>
+              <span class="font-bold text-gray-500">22%</span>
+            </button>
+          </div>
+          <p id="pollMessage" class="hidden text-[11px] text-emerald-600 font-semibold mt-2 text-center"><i class="fa-solid fa-check-circle mr-1"></i> Terima kasih atas partisipasi Anda!</p>
+        </div>
+
+        <!-- WIDGET 4: OPINI & KOLOM -->
+        <div class="bg-white rounded-lg shadow border border-gray-200 p-4">
+          <h3 class="text-base font-bold text-gray-900 border-b-2 border-emerald-600 pb-2 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-pen-nib text-emerald-600"></i>
+            KOLOM OPINI SULUT
+          </h3>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3 border-b border-gray-100 pb-2">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Penulis" class="w-10 h-10 rounded-full object-cover">
+              <div>
+                <h5 class="text-xs font-bold text-gray-900 hover:text-detikBlue cursor-pointer">Menjaga Warisan Kuno Megalitikum di Pokol Minahasa</h5>
+                <p class="text-[11px] text-gray-500">Dr. Alex Luntungan • Pengamat Budaya</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Penulis" class="w-10 h-10 rounded-full object-cover">
+              <div>
+                <h5 class="text-xs font-bold text-gray-900 hover:text-detikBlue cursor-pointer">Potensi Ekonomi Maritim Bitung Menembus Pasar Pasifik</h5>
+                <p class="text-[11px] text-gray-500">Prof. Royke Sondakh • Ekonom UNSRAT</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+  </div>
+
+  <!-- ==================== 4. FOOTER ==================== -->
+  <footer class="bg-gray-900 text-white mt-12 border-t-4 border-detikBlue">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <a href="#" class="inline-flex items-baseline gap-1 font-brand">
+            <span class="text-3xl font-black text-white">we</span>
+            <span class="text-3xl font-black text-detikRed">kawanua</span>
+          </a>
+          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+            Portal berita digital terdepan menyajikan informasi terkini dari Manado, Bitung, Tomohon, Minahasa, Nusa Utara, dan seluruh wilayah Sulawesi Utara.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold border-b border-gray-800 pb-2 mb-3 text-detikBlue">KATEGORI REGIONAL</h4>
+          <ul class="text-xs space-y-2 text-gray-400">
+            <li><a href="#" onclick="filterCategory('Manado')" class="hover:text-white">Kota Manado</a></li>
+            <li><a href="#" onclick="filterCategory('Bitung')" class="hover:text-white">Kota Bitung</a></li>
+            <li><a href="#" onclick="filterCategory('Tomohon')" class="hover:text-white">Kota Tomohon</a></li>
+            <li><a href="#" onclick="filterCategory('Kotamobagu')" class="hover:text-white">Kota Kotamobagu</a></li>
+            <li><a href="#" onclick="filterCategory('Nusa Utara')" class="hover:text-white">Kepulauan Sangihe & Talaud</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold border-b border-gray-800 pb-2 mb-3 text-detikBlue">LAYANAN & INFORMASI</h4>
+          <ul class="text-xs space-y-2 text-gray-400">
+            <li><a href="#" onclick="openToast('Redaksi we kawanua')" class="hover:text-white">Redaksi & Pedoman Media</a></li>
+            <li><a href="#" onclick="openToast('Karir di we kawanua')" class="hover:text-white">Karir</a></li>
+            <li><a href="#" onclick="openToast('Info Iklan')" class="hover:text-white">Pasang Iklan</a></li>
+            <li><a href="#" onclick="openToast('Hak Cipta')" class="hover:text-white">Disclaimer & Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-sm font-bold border-b border-gray-800 pb-2 mb-3 text-detikBlue">IKUTI KAMI</h4>
+          <div class="flex gap-3 text-lg mb-4">
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-detikBlue hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-sky-400 hover:text-white transition"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-pink-600 hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-red-600 hover:text-white transition"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+          <p class="text-xs text-gray-400">Hubungi Redaksi: <span class="text-white">redaksi@wekawanua.com</span></p>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 mt-8 pt-4 text-center text-xs text-gray-500">
+        &copy; 2026 <strong>we kawanua</strong>. Hak Cipta Dilindungi. Bagian dari Jaringan Media Digital Sulawesi Utara.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== 5. MODALS & SLIDE-OVER PANELS ==================== -->
+
+  <!-- ARTICLE DETAIL MODAL READER -->
+  <div id="articleModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto p-3 sm:p-6 flex justify-center">
+    <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full my-auto overflow-hidden relative border border-gray-200 animate-fadeIn">
+      <!-- Close Button -->
+      <button onclick="closeArticleModal()" class="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <!-- Modal Content Body -->
+      <div class="max-h-[85vh] overflow-y-auto p-4 sm:p-8">
+        <span id="modalCategory" class="inline-block bg-detikRed text-white text-xs font-bold px-2.5 py-1 rounded uppercase tracking-wider mb-2">MANADO</span>
+        <h1 id="modalTitle" class="text-xl sm:text-3xl font-extrabold text-gray-900 leading-snug mb-3">Judul Berita Detail</h1>
+        
+        <div class="flex items-center justify-between border-b border-gray-200 pb-3 mb-4 text-xs text-gray-500">
+          <div class="flex items-center gap-2">
+            <span id="modalAuthor" class="font-semibold text-gray-700">Tim Redaksi</span>
+            <span>•</span>
+            <span id="modalDate">Selasa, 27 Okt 2026</span>
+          </div>
+          <button id="modalBookmarkBtn" onclick="toggleBookmarkCurrent()" class="text-detikBlue hover:text-detikRed font-semibold flex items-center gap-1 text-xs">
+            <i class="fa-regular fa-bookmark"></i> Simpan
+          </button>
+        </div>
+
+        <img id="modalImage" src="" alt="Detail Image" class="w-full h-64 sm:h-96 object-cover rounded-lg mb-4">
+        
+        <div id="modalBody" class="prose max-w-none text-gray-800 text-sm sm:text-base leading-relaxed space-y-4">
+          <!-- Article text dynamically inserted -->
+        </div>
+
+        <!-- Social Share Bar -->
+        <div class="border-t border-b border-gray-200 py-3 my-6 flex items-center justify-between text-xs">
+          <span class="font-bold text-gray-700">Bagikan Berita Ini:</span>
+          <div class="flex gap-2">
+            <button onclick="openToast('Berhasil dibagikan ke WhatsApp')" class="bg-emerald-500 text-white px-3 py-1.5 rounded-full font-medium hover:bg-emerald-600 transition flex items-center gap-1">
+              <i class="fa-brands fa-whatsapp"></i> WA
+            </button>
+            <button onclick="openToast('Berhasil dibagikan ke Facebook')" class="bg-blue-600 text-white px-3 py-1.5 rounded-full font-medium hover:bg-blue-700 transition flex items-center gap-1">
+              <i class="fa-brands fa-facebook-f"></i> Facebook
+            </button>
+            <button onclick="openToast('Link berita telah disalin!')" class="bg-gray-700 text-white px-3 py-1.5 rounded-full font-medium hover:bg-gray-800 transition flex items-center gap-1">
+              <i class="fa-solid fa-link"></i> Salin Link
+            </button>
+          </div>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="mt-6">
+          <h3 class="font-bold text-base text-gray-900 mb-3 flex items-center gap-2">
+            <i class="fa-regular fa-comments text-detikBlue"></i> Komentar Pembaca (<span id="modalCommentCount">0</span>)
+          </h3>
+          <div class="flex gap-2 mb-4">
+            <input type="text" id="commentInput" placeholder="Tulis komentar kawanua Anda..." class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-detikBlue">
+            <button onclick="addComment()" class="bg-detikBlue hover:bg-detikDarkBlue text-white font-bold px-4 py-2 rounded-lg text-xs transition">Kirim</button>
+          </div>
+          <div id="modalCommentsList" class="space-y-3">
+            <!-- Comments rendered dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKMARKS MODAL -->
+  <div id="bookmarksModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-center items-center p-4">
+    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
+      <button onclick="closeBookmarksModal()" class="absolute top-3 right-3 text-gray-500 hover:text-black">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+      <h3 class="text-lg font-bold text-detikBlue mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-bookmark text-detikRed"></i> Berita Tersimpan Anda
+      </h3>
+      <div id="bookmarksList" class="max-h-80 overflow-y-auto space-y-3">
+        <!-- Bookmark items inserted via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR MENU DRAWER (MOBILE / HAMBURGER) -->
+  <div id="sideDrawer" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex">
+    <div class="w-80 bg-white h-full shadow-2xl p-5 overflow-y-auto flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between border-b pb-3 mb-4">
+          <span class="font-brand text-2xl font-black text-detikBlue">we<span class="text-detikRed">kawanua</span></span>
+          <button onclick="toggleSideMenu()" class="text-gray-500 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <p class="text-xs text-gray-500 mb-4">Navigasi Berita Daerah & Kategori</p>
+        <div class="space-y-2 text-sm font-semibold text-gray-800">
+          <button onclick="filterCategory('all'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue flex items-center justify-between">
+            <span><i class="fa-solid fa-house mr-2 text-detikBlue"></i> Halaman Utama</span>
+          </button>
+          <button onclick="filterCategory('Manado'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kota Manado</button>
+          <button onclick="filterCategory('Bitung'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kota Bitung</button>
+          <button onclick="filterCategory('Tomohon'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kota Tomohon</button>
+          <button onclick="filterCategory('Kotamobagu'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kota Kotamobagu</button>
+          <button onclick="filterCategory('Minahasa'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kabupaten Minahasa</button>
+          <button onclick="filterCategory('Nusa Utara'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kepulauan Sangihe & Talaud</button>
+          <button onclick="filterCategory('Wisata'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Wisata & Ekowisata Likupang</button>
+          <button onclick="filterCategory('Kuliner'); toggleSideMenu();" class="w-full text-left py-2 px-3 rounded hover:bg-detikLightBlue hover:text-detikBlue">Kuliner khas Kawanua</button>
+        </div>
+      </div>
+      <div class="border-t pt-4 text-xs text-gray-500">
+        <p>&copy; 2026 we kawanua Sulawesi Utara</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-xs flex items-center gap-2 border border-gray-700">
+    <i class="fa-solid fa-circle-info text-detikBlue"></i>
+    <span id="toastMsg">Pesan Notifikasi</span>
+  </div>
+
+
+  <!-- ==================== 6. JAVASCRIPT APP LOGIC ==================== -->
+  <script>
+    // DATASET BERITA SULAWESI UTARA
+    const newsData = [
+      {
+        id: 1,
+        title: "DPSP Likupang Sambut Komitmen Investasi Hijau Rp 1.2 Triliun Untuk Ekowisata Bahari",
+        category: "Wisata",
+        region: "Likupang",
+        author: "Fransiscus Pangemanan",
+        date: "27 Okt 2026 • 10 WITA",
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+        excerpt: "Kawasan Destinasi Pariwisata Super Prioritas (DPSP) Likupang menerima komitmen investasi hijau sebesar Rp 1.2 Triliun untuk pembangunan jaringan resort ramah lingkungan...",
+        content: `
+          <p class="font-bold text-lg text-gray-900">Likupang, Minahasa Utara —</p>
+          <p>Kawasan Destinasi Pariwisata Super Prioritas (DPSP) Likupang, Sulawesi Utara, kembali mencatatkan pencapaian investasi bernilai fantastis. Pemerintah Provinsi Sulawesi Utara mengonfirmasi masuknya investor konsorsium ekowisata dengan nilai komitmen mencapai Rp 1.2 Triliun.</p>
+          <p>Investasi ini difokuskan pada pembangunan resort ramah lingkungan bersertifikasi zero-carbon, energi surya terpadu, serta fasilitas konservasi terumbu karang di pesisir Pantai Pulisan dan Pesisir Likupang Barat.</p>
+          <p>Gubernur Sulut menyatakan bahwa Likupang kini siap menjadi destinasi kelas dunia yang menyeimbangkan pesona keindahan alam maritim dengan asas kelestarian ekosistem lokal.</p>
+        `,
+        isPopular: true,
+        comments: [
+          { name: "Meity T.", text: "Bangga sekali Likupang makin maju! Semoga tenaga kerja lokal Minahasa Utara diserap maksimal." },
+          { name: "Joni Runtu", text: "Jalan akses ke Pulisan juga harus terus diperlebar ya." }
+        ]
+      },
+      {
+        id: 2,
+        title: "Pemkot Manado Resmikan Revitalisasi Kawasan Wisata Kuliner Malalayang Beach Walk Tahap II",
+        category: "Manado",
+        region: "Manado",
+        author: "Siti Rahmawati",
+        date: "27 Okt 2026 • 09 WITA",
+        image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80",
+        excerpt: "Kawasan Malalayang Beach Walk (MBW) Tahap II resmi dibuka hari ini dengan penambahan pedestrian waterfront, area UMKM Tinutuan, dan pemandangan sunset...",
+        content: `
+          <p class="font-bold text-lg text-gray-900">Manado —</p>
+          <p>Wali Kota Manado meresmikan penyelesaian proyek pengaktifan ruang publik Malalayang Beach Walk (MBW) Tahap II. Fasilitas baru ini menawarkan track lari tepi pantai sejauh 1,8 km, spot foto ikonik berlatar Pulau Manado Tua, serta puluhan kios UMKM kuliner khas Manado.</p>
+          <p>Masyarakat kini dapat menikmati sajian Tinutuan, Pisang Goreng Sambal Roa, dan Es Manado dengan kenyamanan fasilitas standar internasional.</p>
+        `,
+        isPopular: true,
+        comments: [
+          { name: "Noldy K.", text: "MBW makin mantap buat santai sore bareng keluarga." }
+        ]
+      },
+      {
+        id: 3,
+        title: "Festival Bunga Tomohon 2026 Tarik Puluhan Ribu Wisatawan Manca Negara",
+        category: "Tomohon",
+        region: "Tomohon",
+        author: "Stephanus V.",
+        date: "27 Okt 2026 • 08 WITA",
+        image: "https://images.unsplash.com/photo-1508612761958-e931d843bdd5?auto=format&fit=crop&w=800&q=80",
+        excerpt: "Parade kendaraan hias berbunga segar (Tournament of Flowers) di Kota Tomohon menyedot perhatian wisatawan asal Eropa dan Asia Timur...",
+        content: `
+          <p class="font-bold text-lg text-gray-900">Tomohon —</p>
+          <p>Kota Bunga Tomohon kembali menggelar ajang internasional tahunannya. Ribuan bunga krisan dan hortensia lokal menghiasi lebih dari 30 float kendaraan hias yang melintasi jalan protokol Kota Tomohon.</p>
+        `,
+        isPopular: true,
+        comments: []
+      },
+      {
+        id: 4,
+        title: "Pelabuhan Internasional Bitung Perluas Rute Ekspor Langsung Hasil Perikanan ke Jepang",
+        category: "Bitung",
+        region: "Bitung",
+        author: "Grace Sompie",
+        date: "27 Okt 2026 • 07 WITA",
+        image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80",
+        excerpt: "Pelabuhan Hub Bitung membuka pelayaran kontainer pendingin direct-call terbaru menuju pelabuhan Narita & Yokohama untuk mempercepat komoditas Cakalang...",
+        content: `
+          <p class="font-bold text-lg text-gray-900">Bitung —</p>
+          <p>Kota Bitung mengukuhkan posisinya sebagai kota industri maritim utama di Indonesia Timur dengan dibukanya jadwal pelayaran ekspor ikan tuna dan cakalang segar secara langsung (direct flight/ship) ke Jepang.</p>
+        `,
+        isPopular: true,
+        comments: []
+      },
+      {
+        id: 5,
+        title: "Panen Raya Kopi Kotamobagu Dorong Ekspor Komoditas Khas Bolaang Mongondow",
+        category: "Kotamobagu",
+        region: "Kotamobagu",
+        author: "Rizal Mokoginta",
+        date: "26 Okt 2026 • 19 WITA",
+        image: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80",
+        excerpt: "Para petani kopi arabika dan robusta di wilayah Kotamobagu dan sekitarnya mencatatkan hasil panen melimpah dengan kualitas aroma premium...",
+        content: `
+          <p class="font-bold text-lg text-gray-900">Kotamobagu —</p>
+          <p>Hasil panen kopi organik khas Bolaang Mongondow (Bolmong) mencapai rekor tertinggi musim ini. Asosiasi Petani Kopi Kotamobagu menyatakan permintaan biji kopi roast bermutu tinggi terus meningkat dari cafe-cafe besar di Jakarta dan Surabaya.</p>
+        `,
+        isPopular: false,
+        comments: []
+      },
+      {
+        id: 6,
+        title: "Pemerintah Minahasa Intensifkan Pelestarian Kawasan Danau Tondano",
+        category: "Minahasa",
+        region: "Minahasa",
+        author: "Wulan Supit",
+        date: "26 Okt 2026 • 16 WITA",
+        image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
+        excerpt: "Pembersihan enceng gondok serta pengerukan sedimentasi Danau Tondano dimaksimalkan guna menjaga suplai air bersih dan daya dukung turbin PLTA...",
+        content: `
+          <p class="font-bold text-lg text-gray-900">Tondano —</p>
+          <p>Upaya penyelamatan Danau Tondano terus dilakukan secara terpadu oleh Pemerintah Kabupaten Minahasa bekerja sama dengan TNI-Polri dan relawan masyarakat setempat.</p>
+        `,
+        isPopular: true,
+        comments: []
+      }
+    ];
+
+    let currentActiveCategory = 'all';
+    let heroData = newsData[0];
+    let activeModalArticleId = null;
+    let savedBookmarks = JSON.parse(localStorage.getItem('weKawanuaBookmarks')) || [];
+
+    // INITIALIZATION
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHero();
+      renderNewsFeed(newsData);
+      renderPopularNews();
+      updateBookmarkBadge();
+    });
+
+    // RENDER HERO ARTICLE
+    function renderHero() {
+      document.getElementById('heroImage').src = heroData.image;
+      document.getElementById('heroCategory').innerText = `UTAMA • ${heroData.region}`;
+      document.getElementById('heroTitle').innerText = heroData.title;
+      document.getElementById('heroAuthor').innerHTML = `<i class="fa-regular fa-user mr-1"></i> ${heroData.author}`;
+      document.getElementById('heroDate').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${heroData.date}`;
+    }
+
+    // RENDER MAIN NEWS FEED LIST
+    function renderNewsFeed(data) {
+      const container = document.getElementById('newsContainer');
+      container.innerHTML = '';
+
+      if (data.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-gray-500">
+            <i class="fa-solid fa-newspaper text-3xl mb-2 text-gray-400"></i>
+            <p class="text-sm font-medium">Tidak ada berita ditemukan untuk pencarian ini.</p>
+          </div>
+        `;
+        return;
+      }
+
+      data.forEach(item => {
+        const isSaved = savedBookmarks.includes(item.id);
+        const card = document.createElement('div');
+        card.className = "flex flex-col sm:flex-row gap-4 border-b border-gray-200 pb-4 hover:bg-gray-50 p-2 rounded-lg transition cursor-pointer group";
+        card.onclick = (e) => {
+          if(!e.target.closest('.bookmark-btn')) openArticleModal(item.id);
+        };
+
+        card.innerHTML = `
+          <div class="w-full sm:w-44 h-32 flex-shrink-0 overflow-hidden rounded-md relative">
+            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <span class="absolute top-2 left-2 bg-detikBlue text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">${item.region}</span>
+          </div>
+          <div class="flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-[11px] text-gray-500 mb-1">
+                <span class="text-detikRed font-bold uppercase tracking-wider">${item.category}</span>
+                <span>${item.date}</span>
+              </div>
+              <h4 class="font-bold text-sm sm:text-base text-gray-900 group-hover:text-detikBlue transition leading-snug line-clamp-2">${item.title}</h4>
+              <p class="text-xs text-gray-600 mt-1 line-clamp-2">${item.excerpt}</p>
+            </div>
+            <div class="flex items-center justify-between mt-3 text-xs text-gray-500">
+              <span class="text-[11px]"><i class="fa-regular fa-user mr-1"></i> ${item.author}</span>
+              <button onclick="toggleBookmark(${item.id})" class="bookmark-btn text-gray-400 hover:text-detikRed transition" title="Simpan Berita">
+                <i class="${isSaved ? 'fa-solid text-detikRed' : 'fa-regular'} fa-bookmark"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // RENDER SIDEBAR TERPOPULER (#1 TO #5 DETIK STYLE)
+    function renderPopularNews() {
+      const container = document.getElementById('popularNewsContainer');
+      container.innerHTML = '';
+
+      const populars = newsData.slice(0, 5);
+      populars.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = "flex items-start gap-3 cursor-pointer group";
+        itemEl.onclick = () => openArticleModal(item.id);
+
+        itemEl.innerHTML = `
+          <span class="font-brand text-2xl font-black text-detikBlue/30 group-hover:text-detikRed transition w-6 text-center">#${index + 1}</span>
+          <div class="flex-1 border-b border-gray-100 pb-3">
+            <span class="text-[10px] font-bold text-detikRed uppercase">${item.region}</span>
+            <h5 class="text-xs font-bold text-gray-800 group-hover:text-detikBlue transition line-clamp-2 leading-snug">${item.title}</h5>
+          </div>
+        `;
+        container.appendChild(itemEl);
+      });
+    }
+
+    // FILTER BY CATEGORY
+    function filterCategory(cat) {
+      currentActiveCategory = cat;
+      const filterStatus = document.getElementById('filterStatus');
+      const filterKeyword = document.getElementById('filterKeyword');
+
+      if (cat === 'all') {
+        filterStatus.classList.add('hidden');
+        renderNewsFeed(newsData);
+      } else {
+        filterKeyword.innerText = cat;
+        filterStatus.classList.remove('hidden');
+        const filtered = newsData.filter(item => 
+          item.category.toLowerCase().includes(cat.toLowerCase()) || 
+          item.region.toLowerCase().includes(cat.toLowerCase())
+        );
+        renderNewsFeed(filtered);
+      }
+    }
+
+    // SEARCH FUNCTIONALITY
+    function handleSearch(e) {
+      if (e.key === 'Enter') executeSearch();
+    }
+
+    function executeSearch() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!query) {
+        filterCategory('all');
+        return;
+      }
+      document.getElementById('filterKeyword').innerText = `"${query}"`;
+      document.getElementById('filterStatus').classList.remove('hidden');
+
+      const results = newsData.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.excerpt.toLowerCase().includes(query) ||
+        item.region.toLowerCase().includes(query)
+      );
+      renderNewsFeed(results);
+    }
+
+    // ARTICLE READER MODAL
+    function openArticleModal(id) {
+      const article = newsData.find(item => item.id === id);
+      if (!article) return;
+
+      activeModalArticleId = id;
+      document.getElementById('modalCategory').innerText = `${article.category} • ${article.region}`;
+      document.getElementById('modalTitle').innerText = article.title;
+      document.getElementById('modalAuthor').innerText = article.author;
+      document.getElementById('modalDate').innerText = article.date;
+      document.getElementById('modalImage').src = article.image;
+      document.getElementById('modalBody').innerHTML = article.content;
+
+      // Render Comments
+      renderModalComments(article.comments);
+
+      // Bookmark Button State
+      const isSaved = savedBookmarks.includes(id);
+      document.getElementById('modalBookmarkBtn').innerHTML = `<i class="${isSaved ? 'fa-solid text-detikRed' : 'fa-regular'} fa-bookmark"></i> ${isSaved ? 'Tersimpan' : 'Simpan'}`;
+
+      document.getElementById('articleModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeArticleModal() {
+      document.getElementById('articleModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    function renderModalComments(comments) {
+      const listContainer = document.getElementById('modalCommentsList');
+      document.getElementById('modalCommentCount').innerText = comments.length;
+      listContainer.innerHTML = '';
+
+      if (comments.length === 0) {
+        listContainer.innerHTML = `<p class="text-xs text-gray-400 italic">Belum ada komentar. Jadilah yang pertama berkomentar!</p>`;
+        return;
+      }
+
+      comments.forEach(c => {
+        const div = document.createElement('div');
+        div.className = "bg-gray-50 p-2.5 rounded border border-gray-200 text-xs";
+        div.innerHTML = `
+          <div class="flex items-center justify-between font-bold text-gray-800 mb-1">
+            <span>${c.name}</span>
+            <span class="text-[10px] text-gray-400">Baru saja</span>
+          </div>
+          <p class="text-gray-600">${c.text}</p>
+        `;
+        listContainer.appendChild(div);
+      });
+    }
+
+    function addComment() {
+      const input = document.getElementById('commentInput');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const article = newsData.find(item => item.id === activeModalArticleId);
+      if (article) {
+        article.comments.unshift({ name: "Warga Kawanua", text: val });
+        renderModalComments(article.comments);
+        input.value = '';
+        openToast('Komentar Anda berhasil dipublikasikan');
+      }
+    }
+
+    // BOOKMARK SYSTEM
+    function toggleBookmark(id) {
+      const index = savedBookmarks.indexOf(id);
+      if (index > -1) {
+        savedBookmarks.splice(index, 1);
+        openToast('Berita dihapus dari simpanan');
+      } else {
+        savedBookmarks.push(id);
+        openToast('Berita berhasil disimpan');
+      }
+      localStorage.setItem('weKawanuaBookmarks', JSON.stringify(savedBookmarks));
+      updateBookmarkBadge();
+      renderNewsFeed(newsData);
+    }
+
+    function toggleBookmarkCurrent() {
+      if (activeModalArticleId) {
+        toggleBookmark(activeModalArticleId);
+        const isSaved = savedBookmarks.includes(activeModalArticleId);
+        document.getElementById('modalBookmarkBtn').innerHTML = `<i class="${isSaved ? 'fa-solid text-detikRed' : 'fa-regular'} fa-bookmark"></i> ${isSaved ? 'Tersimpan' : 'Simpan'}`;
+      }
+    }
+
+    function updateBookmarkBadge() {
+      const badge = document.getElementById('bookmarkBadge');
+      if (savedBookmarks.length > 0) {
+        badge.innerText = savedBookmarks.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function openBookmarksModal() {
+      const list = document.getElementById('bookmarksList');
+      list.innerHTML = '';
+
+      if (savedBookmarks.length === 0) {
+        list.innerHTML = `<p class="text-xs text-gray-500 text-center py-6">Belum ada berita yang Anda simpan.</p>`;
+      } else {
+        savedBookmarks.forEach(id => {
+          const item = newsData.find(n => n.id === id);
+          if (item) {
+            const div = document.createElement('div');
+            div.className = "flex items-center justify-between p-2 border border-gray-200 rounded text-xs hover:bg-gray-50";
+            div.innerHTML = `
+              <span class="font-bold text-gray-800 line-clamp-1 flex-1 cursor-pointer" onclick="closeBookmarksModal(); openArticleModal(${item.id})">${item.title}</span>
+              <button onclick="toggleBookmark(${item.id}); openBookmarksModal();" class="text-detikRed ml-2 font-bold text-xs"><i class="fa-solid fa-trash"></i></button>
+            `;
+            list.appendChild(div);
+          }
+        });
+      }
+
+      document.getElementById('bookmarksModal').classList.remove('hidden');
+    }
+
+    function closeBookmarksModal() {
+      document.getElementById('bookmarksModal').classList.add('hidden');
+    }
+
+    // INTERACTIVE POLL
+    function votePoll(type) {
+      document.getElementById('pollMessage').classList.remove('hidden');
+      openToast('Suara poling Anda telah terhitung!');
+    }
+
+    // SIDE DRAWER
+    function toggleSideMenu() {
+      const drawer = document.getElementById('sideDrawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    // TOAST MESSAGES
+    function openToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
